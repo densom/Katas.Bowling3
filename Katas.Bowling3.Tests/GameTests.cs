@@ -6,14 +6,6 @@ namespace Katas.Bowling3.Tests
     [TestFixture]
     public class GameTests
     {
-        [Test]
-        [Ignore]
-        public void Game_Defaults()
-        {
-            var game = new Game();
-            Assert.That(game.Score(), Is.EqualTo(0));
-            Assert.That(game.FrameNumber, Is.EqualTo(1));
-        }
 
         [Test]
         public void Score_NoThrows_ReturnsZero()
@@ -76,5 +68,55 @@ namespace Katas.Bowling3.Tests
             game.RecordThrow(10);
             Assert.That(game.IsSecondBall, Is.False);
         }
+
+        [Test]
+        public void IsSpare_OpenFrame_False()
+        {
+            var game = new Game();
+            game.RecordThrow(1);
+            game.RecordThrow(1);
+
+            Assert.That(game.IsSpare, Is.False);
+        }
+
+        [Test]
+        public void IsSpare_SecondBallAndFirstBallEqualTenPins_True()
+        {
+            var game = new Game();
+            game.RecordThrow(1);
+            game.RecordThrow(9);
+
+            Assert.That(game.IsSpare, Is.True);
+        }
+
+        [Test]
+        public void IsStrike_OpenFrame_False()
+        {
+            var game = new Game();
+            game.RecordThrow(1);
+            game.RecordThrow(1);
+
+            Assert.That(game.IsStrike, Is.False);
+        }
+
+        [Test]
+        public void IsStrike_FirstBallTenPins_True()
+        {
+            var game = new Game();
+            game.RecordThrow(10);
+
+            Assert.That(game.IsStrike, Is.True);
+        }
+
+        [Test]
+        public void IsStrike_SecondBallTenPins_False()
+        {
+            var game = new Game();
+            game.RecordThrow(0);
+            game.RecordThrow(10);
+
+            Assert.That(game.IsStrike, Is.False);
+        }
+
     }
 }

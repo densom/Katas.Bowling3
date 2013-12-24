@@ -14,18 +14,25 @@ namespace Katas.Bowling3
             return _score;
         }
 
-        public int FrameNumber
-        {
-            get { return 1; }
-        }
-
         internal bool IsSecondBall { get; private set; }
+        internal bool IsSpare { get; private set; }
+        internal bool IsStrike { get; private set; }
+
+
+        public Game()
+        {
+            IsSpare = false;
+            IsStrike = false;
+        }
 
         public void RecordThrow(int numberOfPinsKnockedDown)
         {
             _numberOfPinsKnockedDown = numberOfPinsKnockedDown;
 
             _score += numberOfPinsKnockedDown;
+
+            SetIsSpare();
+            SetIsStrike();
 
             CreditUpToTwoPendingBonusBalls();
             UpdateNewlyEarnedBonusBalls();
@@ -36,20 +43,39 @@ namespace Katas.Bowling3
 
         private void UpdateNewlyEarnedBonusBalls()
         {
-            if (IsSpare())
+
+            if (IsSpare)
             {
                 _bonusBallsEarned += 1;
             }
+
+            if (IsStrike)
+            {
+                _bonusBallsEarned += 2;
+            }
         }
 
-        private bool IsSpare()
+        internal void SetIsSpare()
         {
-            return ((_previousThrowNumberOfPinsKnockedDown + _numberOfPinsKnockedDown) == 10) && IsSecondBall;
+            if (((_previousThrowNumberOfPinsKnockedDown + _numberOfPinsKnockedDown) == 10) && IsSecondBall)
+            {
+                IsSpare = true;
+                return;
+            }
+
+            IsSpare = false;
         }
 
-        internal bool IsStrike()
+        internal void SetIsStrike()
         {
-            return ((_numberOfPinsKnockedDown == 10) && !IsSecondBall);
+            if (_numberOfPinsKnockedDown == 10 && !IsSecondBall)
+            {
+                IsStrike = true;
+                return;
+            }
+
+            IsStrike = false;
+
         }
 
         private void CreditUpToTwoPendingBonusBalls()
@@ -62,7 +88,7 @@ namespace Katas.Bowling3
                 _bonusBallsEarned -= 1;
                 iterations--;
             }
-            
+
         }
 
         private void SetIsSecondBallStatus()
