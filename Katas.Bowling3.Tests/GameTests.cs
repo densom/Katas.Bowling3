@@ -32,5 +32,27 @@ namespace Katas.Bowling3.Tests
             Assert.That(game.Score(), Is.EqualTo(expectedScore));
         }
 
+        [Test]
+        public void IsSecondBall_InitialState_False()
+        {
+            var game = new Game();
+            Assert.That(game.IsSecondBall, Is.False);
+        }
+
+        [Test]
+        public void IsSecondBall_AfterFirstThrow_True()
+        {
+            var game = new Game();
+            game.RecordThrow(1);
+            Assert.That(game.IsSecondBall, Is.True);
+        }
+
+        [Test]
+        public void IsSecondBall_AfterStrike_False()
+        {
+            var game = new Game();
+            game.RecordThrow(10);
+            Assert.That(game.IsSecondBall, Is.False);
+        }
     }
 }

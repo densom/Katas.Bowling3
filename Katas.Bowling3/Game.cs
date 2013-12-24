@@ -16,9 +16,23 @@ namespace Katas.Bowling3
             get { return 1; }
         }
 
+        internal bool IsSecondBall { get; private set; }
+
         public void RecordThrow(int numberOfPinsKnockedDown)
         {
             _score += numberOfPinsKnockedDown;
+
+            SetIsSecondBallStatus(numberOfPinsKnockedDown);
+        }
+
+        private void SetIsSecondBallStatus(int numberOfPinsKnockedDown)
+        {
+            IsSecondBall = !IsSecondBall;
+
+            if (numberOfPinsKnockedDown == 10)
+            {
+                IsSecondBall = false;
+            }
         }
     }
 }
