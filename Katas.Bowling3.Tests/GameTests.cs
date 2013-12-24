@@ -6,12 +6,18 @@ namespace Katas.Bowling3.Tests
     [TestFixture]
     public class GameTests
     {
+        private Game _game;
+
+        [SetUp]
+        public void TestSetUp()
+        {
+            _game = new Game();
+        }
 
         [Test]
         public void Score_NoThrows_ReturnsZero()
         {
-            var game = new Game();
-            Assert.That(game.Score(), Is.EqualTo(0));
+            Assert.That(_game.Score(), Is.EqualTo(0));
         }
 
         [Test]
@@ -19,104 +25,90 @@ namespace Katas.Bowling3.Tests
         [TestCase(new[] { 1, 1 }, 2)]
         public void Score_OpenFrames_ReturnsPinsKnockedDown(int[] throws, int expectedScore)
         {
-            var game = new Game();
-            throws.ToList().ForEach(game.RecordThrow);
-            Assert.That(game.Score(), Is.EqualTo(expectedScore));
+            RecordMultipleThrows(throws);
+            Assert.That(_game.Score(), Is.EqualTo(expectedScore));
         }
 
         [Test]
         public void Score_Spare_CalculatesOneBonusBall()
         {
-            var game = new Game();
-            game.RecordThrow(1);
-            game.RecordThrow(9);
-            game.RecordThrow(1);
-
-            Assert.That(game.Score(), Is.EqualTo(12));
+            RecordMultipleThrows(1,9,1);
+            
+            Assert.That(_game.Score(), Is.EqualTo(12));
         }
 
         [Test]
         public void Score_Strike_CalculatesTwoBonusBalls()
         {
-            var game = new Game();
-            game.RecordThrow(10);
-            game.RecordThrow(1);
-            game.RecordThrow(1);
+            RecordMultipleThrows(10,1,1);
 
-            Assert.That(game.Score(), Is.EqualTo(14));
+            Assert.That(_game.Score(), Is.EqualTo(14));
         }
 
         [Test]
         public void IsSecondBall_InitialState_False()
         {
-            var game = new Game();
-            Assert.That(game.IsSecondBall, Is.False);
+            Assert.That(_game.IsSecondBall, Is.False);
         }
 
         [Test]
         public void IsSecondBall_AfterFirstThrow_True()
         {
-            var game = new Game();
-            game.RecordThrow(1);
-            Assert.That(game.IsSecondBall, Is.True);
+            _game.RecordThrow(1);
+            Assert.That(_game.IsSecondBall, Is.True);
         }
 
         [Test]
         public void IsSecondBall_AfterStrike_False()
         {
-            var game = new Game();
-            game.RecordThrow(10);
-            Assert.That(game.IsSecondBall, Is.False);
+            _game.RecordThrow(10);
+            Assert.That(_game.IsSecondBall, Is.False);
         }
 
         [Test]
         public void IsSpare_OpenFrame_False()
         {
-            var game = new Game();
-            game.RecordThrow(1);
-            game.RecordThrow(1);
-
-            Assert.That(game.IsSpare, Is.False);
+            RecordMultipleThrows(1,1);
+            
+            Assert.That(_game.IsSpare, Is.False);
         }
 
         [Test]
         public void IsSpare_SecondBallAndFirstBallEqualTenPins_True()
         {
-            var game = new Game();
-            game.RecordThrow(1);
-            game.RecordThrow(9);
+            RecordMultipleThrows(1,9);
 
-            Assert.That(game.IsSpare, Is.True);
+            Assert.That(_game.IsSpare, Is.True);
         }
 
         [Test]
         public void IsStrike_OpenFrame_False()
         {
-            var game = new Game();
-            game.RecordThrow(1);
-            game.RecordThrow(1);
-
-            Assert.That(game.IsStrike, Is.False);
+            RecordMultipleThrows(1,1);
+            
+            Assert.That(_game.IsStrike, Is.False);
         }
 
         [Test]
         public void IsStrike_FirstBallTenPins_True()
         {
-            var game = new Game();
-            game.RecordThrow(10);
+            _game.RecordThrow(10);
 
-            Assert.That(game.IsStrike, Is.True);
+            Assert.That(_game.IsStrike, Is.True);
         }
 
         [Test]
         public void IsStrike_SecondBallTenPins_False()
         {
-            var game = new Game();
-            game.RecordThrow(0);
-            game.RecordThrow(10);
+            RecordMultipleThrows(0,10);
 
-            Assert.That(game.IsStrike, Is.False);
+            Assert.That(_game.IsStrike, Is.False);
         }
 
+
+        private void RecordMultipleThrows(params int[] throws)
+        {
+            throws.ToList().ForEach(_game.RecordThrow);
+        }
     }
 }
