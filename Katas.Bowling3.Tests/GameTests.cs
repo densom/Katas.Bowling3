@@ -44,6 +44,17 @@ namespace Katas.Bowling3.Tests
         }
 
         [Test]
+        public void Score_Strike_CalculatesTwoBonusBalls()
+        {
+            var game = new Game();
+            game.RecordThrow(10);
+            game.RecordThrow(1);
+            game.RecordThrow(1);
+
+            Assert.That(game.Score(), Is.EqualTo(14));
+        }
+
+        [Test]
         public void IsSecondBall_InitialState_False()
         {
             var game = new Game();

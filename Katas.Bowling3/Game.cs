@@ -44,15 +44,23 @@ namespace Katas.Bowling3
 
         private bool IsSpare()
         {
-            return (_previousThrowNumberOfPinsKnockedDown + _numberOfPinsKnockedDown) == 10;
+            return ((_previousThrowNumberOfPinsKnockedDown + _numberOfPinsKnockedDown) == 10) && IsSecondBall;
+        }
+
+        internal bool IsStrike()
+        {
+            return ((_numberOfPinsKnockedDown == 10) && !IsSecondBall);
         }
 
         private void CreditUpToTwoPendingBonusBalls()
         {
-            if (_bonusBallsEarned > 0)
+            int iterations = 2;
+
+            while (_bonusBallsEarned > 0 && iterations > 0)
             {
                 _score += _numberOfPinsKnockedDown;
-                _bonusBallsEarned -= 1;    
+                _bonusBallsEarned -= 1;
+                iterations--;
             }
             
         }
