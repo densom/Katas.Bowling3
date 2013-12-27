@@ -32,15 +32,15 @@ namespace Katas.Bowling3.Tests
         [Test]
         public void Score_Spare_CalculatesOneBonusBall()
         {
-            RecordMultipleThrows(1,9,1);
-            
+            RecordMultipleThrows(1, 9, 1);
+
             Assert.That(_game.Score(), Is.EqualTo(12));
         }
 
         [Test]
         public void Score_Strike_CalculatesTwoBonusBalls()
         {
-            RecordMultipleThrows(10,1,1);
+            RecordMultipleThrows(10, 1, 1);
 
             Assert.That(_game.Score(), Is.EqualTo(14));
         }
@@ -48,7 +48,7 @@ namespace Katas.Bowling3.Tests
         [Test]
         public void Score_StrikeFollowedByOneOpenBall_CalculatesOneBonusBall()
         {
-            RecordMultipleThrows(10,1);
+            RecordMultipleThrows(10, 1);
             Assert.That(_game.Score(), Is.EqualTo(12));
         }
 
@@ -67,16 +67,45 @@ namespace Katas.Bowling3.Tests
             Assert.That(_game.Score(), Is.EqualTo(60));
         }
 
+        #region Extra tests to prove full games calculate accuratly
+
         [Test]
         public void Score_PerfectGame_300()
         {
-            for (int i = 0; i < 12; i++)
-            {
-                _game.RecordThrow(10);
-            }
+            const int numberOfPinsKnockedDown = 10;
+            const int numberOfThrows = 12;
+
+            RepeatThrowsForGivenThrows(numberOfPinsKnockedDown, numberOfThrows);
 
             Assert.That(_game.Score(), Is.EqualTo(300));
         }
+
+        [Test]
+        public void Score_AllGutterBalls_0()
+        {
+            const int numberOfPinsKnockedDown = 0;
+            const int numberOfThrows = 12;
+
+            RepeatThrowsForGivenThrows(numberOfPinsKnockedDown, numberOfThrows);
+
+            Assert.That(_game.Score(), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Score_All9AndSpareWithStrikeOn10thFrameBonusBall_191()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                _game.RecordThrow(9);
+                _game.RecordThrow(1);
+            }
+
+            _game.RecordThrow(10);
+
+            Assert.That(_game.Score(), Is.EqualTo(191));
+        }
+
+        #endregion
 
         [Test]
         public void IsSecondBall_InitialState_False()
@@ -101,15 +130,15 @@ namespace Katas.Bowling3.Tests
         [Test]
         public void IsSpare_OpenFrame_False()
         {
-            RecordMultipleThrows(1,1);
-            
+            RecordMultipleThrows(1, 1);
+
             Assert.That(_game.IsSpare, Is.False);
         }
 
         [Test]
         public void IsSpare_SecondBallAndFirstBallEqualTenPins_True()
         {
-            RecordMultipleThrows(1,9);
+            RecordMultipleThrows(1, 9);
 
             Assert.That(_game.IsSpare, Is.True);
         }
@@ -117,8 +146,8 @@ namespace Katas.Bowling3.Tests
         [Test]
         public void IsStrike_OpenFrame_False()
         {
-            RecordMultipleThrows(1,1);
-            
+            RecordMultipleThrows(1, 1);
+
             Assert.That(_game.IsStrike, Is.False);
         }
 
@@ -133,7 +162,7 @@ namespace Katas.Bowling3.Tests
         [Test]
         public void IsStrike_SecondBallTenPins_False()
         {
-            RecordMultipleThrows(0,10);
+            RecordMultipleThrows(0, 10);
 
             Assert.That(_game.IsStrike, Is.False);
         }
@@ -142,6 +171,14 @@ namespace Katas.Bowling3.Tests
         private void RecordMultipleThrows(params int[] throws)
         {
             throws.ToList().ForEach(_game.RecordThrow);
+        }
+
+        private void RepeatThrowsForGivenThrows(int numberOfPinsKnockedDown, int numberOfThrows)
+        {
+            for (int i = 0; i < numberOfThrows; i++)
+            {
+                _game.RecordThrow(numberOfPinsKnockedDown);
+            }
         }
     }
 }
