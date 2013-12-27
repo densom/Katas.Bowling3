@@ -11,15 +11,10 @@ namespace Katas.Bowling3
         private int _numberOfPinsKnockedDown;
         private int _currentFrameNumber = 1;
 
-        public int Score()
-        {
-            return _score;
-        }
-
+        
         internal bool IsSecondBall { get; private set; }
         internal bool IsSpare { get; private set; }
         internal bool IsStrike { get; private set; }
-
 
         public Game()
         {
@@ -30,18 +25,32 @@ namespace Katas.Bowling3
         public void RecordThrow(int numberOfPinsKnockedDown)
         {
             _numberOfPinsKnockedDown = numberOfPinsKnockedDown;
-
             _score += numberOfPinsKnockedDown;
 
+            CalculateScoreForBonusBalls();
+            SetFrameState();
+
+            _previousThrowNumberOfPinsKnockedDown = numberOfPinsKnockedDown;
+        }
+
+        public int Score()
+        {
+            return _score;
+        }
+
+        private void SetFrameState()
+        {
+            SetIsSecondBallStatus();
+            UpdateFrameNumber();
+        }
+
+        private void CalculateScoreForBonusBalls()
+        {
             SetIsSpare();
             SetIsStrike();
 
             CreditUpToTwoPendingBonusBalls();
             UpdateNewlyEarnedBonusBalls();
-            SetIsSecondBallStatus();
-            UpdateFrameNumber();
-
-            _previousThrowNumberOfPinsKnockedDown = numberOfPinsKnockedDown;
         }
 
         private void UpdateFrameNumber()
@@ -73,25 +82,22 @@ namespace Katas.Bowling3
 
         internal void SetIsSpare()
         {
+            IsSpare = false;
+            
             if (((_previousThrowNumberOfPinsKnockedDown + _numberOfPinsKnockedDown) == 10) && IsSecondBall)
             {
                 IsSpare = true;
-                return;
-            }
-
-            IsSpare = false;
+            }            
         }
 
         internal void SetIsStrike()
         {
+            IsStrike = false;
+
             if (_numberOfPinsKnockedDown == 10 && !IsSecondBall)
             {
                 IsStrike = true;
-                return;
             }
-
-            IsStrike = false;
-
         }
 
         private void CreditUpToTwoPendingBonusBalls()
