@@ -6,6 +6,7 @@ namespace Katas.Bowling3
     {
         private int _score;
         private int _bonusBallsEarned;
+        private int _bonusBallsEarnedForSecondFrame;
         private int _previousThrowNumberOfPinsKnockedDown;
         private int _numberOfPinsKnockedDown;
 
@@ -44,14 +45,14 @@ namespace Katas.Bowling3
         private void UpdateNewlyEarnedBonusBalls()
         {
 
-            if (IsSpare)
+            if (IsSpare || IsStrike)
             {
                 _bonusBallsEarned += 1;
             }
 
             if (IsStrike)
             {
-                _bonusBallsEarned += 2;
+                _bonusBallsEarnedForSecondFrame += 1;
             }
         }
 
@@ -80,15 +81,20 @@ namespace Katas.Bowling3
 
         private void CreditUpToTwoPendingBonusBalls()
         {
-            int iterations = 2;
+            CreditCurrentBonusBalls();
+            MoveBonusBallsEarnedForSecondFrameToCurrentBonusBalls();
+        }
 
-            while (_bonusBallsEarned > 0 && iterations > 0)
-            {
-                _score += _numberOfPinsKnockedDown;
-                _bonusBallsEarned -= 1;
-                iterations--;
-            }
+        private void MoveBonusBallsEarnedForSecondFrameToCurrentBonusBalls()
+        {
+            _bonusBallsEarned += _bonusBallsEarnedForSecondFrame;
+            _bonusBallsEarnedForSecondFrame = 0;
+        }
 
+        private void CreditCurrentBonusBalls()
+        {
+            _score += _numberOfPinsKnockedDown * _bonusBallsEarned;
+            _bonusBallsEarned = 0;
         }
 
         private void SetIsSecondBallStatus()

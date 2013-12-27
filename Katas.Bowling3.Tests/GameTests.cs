@@ -46,6 +46,28 @@ namespace Katas.Bowling3.Tests
         }
 
         [Test]
+        public void Score_StrikeFollowedByOneOpenBall_CalculatesOneBonusBall()
+        {
+            RecordMultipleThrows(10,1);
+            Assert.That(_game.Score(), Is.EqualTo(12));
+        }
+
+        [Test]
+        public void Score_TwoStrikes_30Including1BonusBall()
+        {
+            RecordMultipleThrows(10, 10);
+            Assert.That(_game.Score(), Is.EqualTo(30));
+        }
+
+        [Test]
+        public void Score_Turkey_60Including3BonusBalls()
+        {
+            RecordMultipleThrows(10, 10, 10);
+
+            Assert.That(_game.Score(), Is.EqualTo(60));
+        }
+
+        [Test]
         public void IsSecondBall_InitialState_False()
         {
             Assert.That(_game.IsSecondBall, Is.False);
