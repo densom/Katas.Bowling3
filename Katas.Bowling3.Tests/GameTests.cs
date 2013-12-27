@@ -68,6 +68,17 @@ namespace Katas.Bowling3.Tests
         }
 
         [Test]
+        public void Score_PerfectGame_300()
+        {
+            for (int i = 0; i < 12; i++)
+            {
+                _game.RecordThrow(10);
+            }
+
+            Assert.That(_game.Score(), Is.EqualTo(300));
+        }
+
+        [Test]
         public void IsSecondBall_InitialState_False()
         {
             Assert.That(_game.IsSecondBall, Is.False);
